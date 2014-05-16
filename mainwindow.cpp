@@ -6,7 +6,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    ui->widget->setDevice(&kinect);
+    ui->kinect_tab->setDevice(&kinect);
+	connect(&timer, SIGNAL(timeout()), &kinect, SLOT(update()));
+	timer.start(40);
 }
 
 MainWindow::~MainWindow()

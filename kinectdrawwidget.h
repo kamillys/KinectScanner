@@ -10,7 +10,7 @@ class KinectDrawWidget : public QWidget
     KinectDevice* kinect;
 public:
     explicit KinectDrawWidget(QWidget *parent = 0);
-    void setDevice(KinectDevice* dev) { kinect = dev; repaint(); }
+    void setDevice(KinectDevice* dev);
 protected:
     void paintEvent(QPaintEvent*);
 };

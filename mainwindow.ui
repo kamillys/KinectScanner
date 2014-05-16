@@ -6,31 +6,40 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>717</width>
-    <height>551</height>
+    <width>1122</width>
+    <height>636</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="KinectDrawWidget" name="widget" native="true">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>10</y>
-      <width>640</width>
-      <height>480</height>
-     </rect>
-    </property>
-   </widget>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QTabWidget" name="tab_host">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="MainTabWidget" name="main_tab">
+       <attribute name="title">
+        <string>Main</string>
+       </attribute>
+      </widget>
+      <widget class="KinectDrawWidget" name="kinect_tab">
+       <attribute name="title">
+        <string>Kinect view</string>
+       </attribute>
+      </widget>
+     </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>717</width>
+     <width>1122</width>
      <height>21</height>
     </rect>
    </property>
@@ -43,6 +52,12 @@
    <class>KinectDrawWidget</class>
    <extends>QWidget</extends>
    <header>kinectdrawwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MainTabWidget</class>
+   <extends>QWidget</extends>
+   <header>maintabwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

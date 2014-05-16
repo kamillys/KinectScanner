@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTimer>
 
 namespace Ui {
 class MainWindow;
@@ -13,6 +14,7 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
     KinectDevice kinect;
+	QTimer timer;
 
 public:
     explicit MainWindow(QWidget *parent = 0);
