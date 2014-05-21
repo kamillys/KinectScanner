@@ -55,9 +55,8 @@ void RenderWidget::initializeGL()
 	logger = new QOpenGLDebugLogger(this);
 	logger->initialize();
 
-	vMatrix.setToIdentity();
-	//vMatrix.lookAt(QVector3D(10, 10, 10), QVector3D(0, 0, 0), QVector3D(0, 0, 1));
-	vMatrix.lookAt(QVector3D(2, 2, 10), QVector3D(0, 0, 0), QVector3D(-1, 0, 0));
+	alfa = 0;
+	beta = 0;
 
 	loadShader(shader,
 	"precision highp float;\n"
@@ -104,6 +103,10 @@ void RenderWidget::paintGL()
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+	vMatrix.setToIdentity();
+	//vMatrix.lookAt(QVector3D(10, 10, 10), QVector3D(0, 0, 0), QVector3D(0, 0, 1));
+	vMatrix.lookAt(10*QVector3D(sin(beta), sin(alfa)*cos(beta), cos(alfa)*cos(beta)), QVector3D(0, 0, 0), QVector3D(-1, 0, 0));
 
 	QMatrix4x4 VP = pMatrix * vMatrix;
 	
@@ -157,12 +160,13 @@ void RenderWidget::mouseMoveEvent(QMouseEvent * ev)
 	mousePt = ev->pos();
 
 	QPointF fdp (dp);
-	fdp *= 0.2;
+	fdp *= 0.02;
 	
 	QString dd = QString("( %1 , %2 )").arg(fdp.x()).arg(fdp.y());
 	//QMessageBox::critical(this, "", dd);
 	window()->setWindowTitle(dd);
-	vMatrix.translate(fdp.x(), fdp.y(), 0);
+	alfa += fdp.x();
+	//vMatrix.translate(fdp.x(), fdp.y(), 0);
 
 	updateGL();
 }

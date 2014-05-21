@@ -17,7 +17,9 @@ static void initialize()
 	is_Initialized = true;
 
 	objectModel.color = QColor(0, 255, 0);
+	//objectModel.modelMatrix.translate(0.5, 0.5, 0.5);
 	objectModel.modelMatrix.scale(5);
+	objectModel.modelMatrix.translate(-0.5, -0.5, 3);
 
 	int k = 0;
 
@@ -51,7 +53,7 @@ void updateModel()
 		int Y = depth.cols * (j / dS);
 		QVector3D& v = objectModel.vertices[i*S+j];
 		short val = depth.at<short>(X, Y);
-		v.setZ(val / 20000.0);
+		v.setZ( -(double)(val)/200.0);
 	}
 }
 

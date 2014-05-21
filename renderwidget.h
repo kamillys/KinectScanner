@@ -30,6 +30,9 @@ protected:
 	void mousePressEvent(QMouseEvent * ev);
 	void mouseReleaseEvent(QMouseEvent * ev);
 
+	double alfa;
+	double beta;
+
 	QPoint mousePt;
 	QMatrix4x4 pMatrix;
 	QMatrix4x4 vMatrix;

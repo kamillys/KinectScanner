@@ -142,6 +142,7 @@ void KinectDevice::update()
 		for (int i=0;i<640;++i)
 		{
 			short d = depth.at<short>(j, i);
+			d = NuiDepthPixelToDepth(d);
 			//lastColorImage.setPixel(640+i, j, qRgb(c[0], c[1], c[2]));
 			scanline[640+i] = depth_to_color(d);
 		}
@@ -149,7 +150,7 @@ void KinectDevice::update()
 	//imshow(colorWindow, color);
 	//imshow(depthWindow, depth);
 
-	sensor->NuiImageGetColorPixelCoordinateFrameFromDepthPixelFrameAtResolution();
+	//sensor->NuiImageGetColorPixelCoordinateFrameFromDepthPixelFrameAtResolution();
 
     emit updated();
 }
