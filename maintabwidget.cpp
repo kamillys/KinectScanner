@@ -12,3 +12,8 @@ MainTabWidget::MainTabWidget(QWidget *parent)
 MainTabWidget::~MainTabWidget(void)
 {
 }
+
+void MainTabWidget::setDevice(KinectDevice* dev)
+{
+	ui->widget->setDevice(dev);
+}

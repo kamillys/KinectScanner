@@ -34,11 +34,18 @@ public:
 	cv::Mat getDepthImage();
 
 	QImage getQImage();
+	bool valid() const {
+		return nullptr != sensor;
+	}
 	
 public slots:
     void update();
+	void do_repaint() {
+		emit repaint();
+	}
 signals:
     void updated();
+	void repaint();
 };
 
 #endif // KINECTDEVICE_H

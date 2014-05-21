@@ -15,9 +15,8 @@ KinectDevice::KinectDevice()
     if (!initializeKinect())
     {
         QMessageBox msgBox;
-        msgBox.setText("Cannot initialize MS Kinect!");
-        msgBox.exec();
-        throw 1;
+        msgBox.setText("Cannot initialize MS Kinect!\nRunning in Kinect-less mode.");
+        //msgBox.exec();
     }
 }
 
@@ -33,6 +32,8 @@ KinectDevice::~KinectDevice()
 
 Mat KinectDevice::updateDepth()
 {
+	if (!sensor)
+		return Mat(480, 640, CV_16UC1);
 	Mat retval;
 	NUI_IMAGE_FRAME frame;
 	if (FAILED(sensor->NuiImageStreamGetNextFrame(depthStream,
@@ -56,6 +57,8 @@ Mat KinectDevice::updateDepth()
 
 Mat KinectDevice::updateColor()
 {
+	if (!sensor)
+		return Mat(480, 640, CV_8UC4);
 	Mat retval;
 	NUI_IMAGE_FRAME frame;
 	if (FAILED(sensor->NuiImageStreamGetNextFrame(colorStream,
@@ -145,6 +148,8 @@ void KinectDevice::update()
 	}
 	//imshow(colorWindow, color);
 	//imshow(depthWindow, depth);
+
+	sensor->NuiImageGetColorPixelCoordinateFrameFromDepthPixelFrameAtResolution();
 
     emit updated();
 }

@@ -20,6 +20,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+private slots:
+	void updateKinect();
 private:
     Ui::MainWindow *ui;
 };
