@@ -47,7 +47,7 @@ Mat KinectDevice::updateDepth()
 		assert(640 * 480 * 2 == rect.size);
 		Mat img(480, 640, CV_16UC1);
 		memcpy(img.ptr<short>(), rect.pBits, rect.size);
-		img /= 8;
+		//img /= 8;
 		retval = img;
 	}
 	frame.pFrameTexture->UnlockRect(0);
@@ -143,6 +143,7 @@ void KinectDevice::update()
 		{
 			short d = depth.at<short>(j, i);
 			d = NuiDepthPixelToDepth(d);
+			depth.at<short>(j, i) = d;
 			//lastColorImage.setPixel(640+i, j, qRgb(c[0], c[1], c[2]));
 			scanline[640+i] = depth_to_color(d);
 		}

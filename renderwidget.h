@@ -29,7 +29,9 @@ protected:
 	void mouseMoveEvent(QMouseEvent * ev);
 	void mousePressEvent(QMouseEvent * ev);
 	void mouseReleaseEvent(QMouseEvent * ev);
+	void wheelEvent(QWheelEvent* ev);
 
+	double dist;
 	double alfa;
 	double beta;
 

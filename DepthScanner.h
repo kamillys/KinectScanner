@@ -8,7 +8,7 @@ namespace DepthScanner
 
 void setKinectDevice(KinectDevice* d);
 void updateModel();
+int modelCount();
 GLModel* getModel();
 
 }
-

@@ -12,8 +12,12 @@ public:
 	virtual ~GLModel(void);
 	
 	void Render(const QMatrix4x4& VP, QGLFunctions* gl, QGLShaderProgram* shader);
-	void RenderPoints(const QMatrix4x4& VP, QGLFunctions* gl, QGLShaderProgram* shader);
 	
+	enum {
+		POINTS,
+		TRIANGLES
+	} type;
+
 	QColor color;
 	QMatrix4x4 modelMatrix;
 	QVector<QVector3D> vertices;

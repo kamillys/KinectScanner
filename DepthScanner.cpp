@@ -5,10 +5,15 @@ namespace DepthScanner
 {
 
 static KinectDevice* kinect = nullptr;
-static GLModel objectModel;
+static GLModel* depthPoints;
+static const int objectCount = 2;
 static bool is_Initialized = false;
 static const int S = 128;
 static const double dS = static_cast<double>(S);
+
+static int distanceToObject = 0;
+
+static int* voxels;
 
 static void initialize()
 {
@@ -16,17 +21,35 @@ static void initialize()
 		return;
 	is_Initialized = true;
 
-	objectModel.color = QColor(0, 255, 0);
-	//objectModel.modelMatrix.translate(0.5, 0.5, 0.5);
-	objectModel.modelMatrix.scale(5);
-	objectModel.modelMatrix.translate(-0.5, -0.5, 3);
+	voxels = new int [S*S*S];
+	memset(voxels, 1, sizeof(int) * S*S*S);
 
-	int k = 0;
+	depthPoints = new GLModel[objectCount];
+	depthPoints->type = GLModel::POINTS;
+	depthPoints->color = QColor(0, 255, 0);
 
-	for (int i=0;i<S;++i)
-	for (int j=0;j<S;++j)
-	//for (int k=0;k<S;++k)
-	objectModel.vertices << QVector3D(i/dS, j/dS, k/dS);
+	for (int i=0;i<S;++i) for (int j=0;j<S;++j)
+	depthPoints->vertices << QVector3D(i/dS, j/dS, 0);
+
+	depthPoints[1].type = GLModel::POINTS;
+	depthPoints[1].color = QColor(0, 128, 255);
+
+	for (int i=0;i<objectCount;++i)
+	{
+		depthPoints[i].modelMatrix.setToIdentity();
+		depthPoints[i].modelMatrix.translate(0, 0, -4);
+		depthPoints[i].modelMatrix.scale(8);
+	}
+
+	depthPoints[1].vertices
+		<< QVector3D(-1, -1, -1)
+		<< QVector3D( 1, -1, -1)
+		<< QVector3D(-1,  1, -1)
+		<< QVector3D( 1,  1, -1)
+		<< QVector3D(-1, -1,  1)
+		<< QVector3D( 1, -1,  1)
+		<< QVector3D(-1,  1,  1)
+		<< QVector3D( 1,  1,  1);
 }
 
 void setKinectDevice(KinectDevice* d)
@@ -35,15 +58,21 @@ void setKinectDevice(KinectDevice* d)
 	initialize();
 }
 
+int modelCount()
+{
+	return objectCount;
+}
+
 GLModel* getModel()
 {
 	initialize();
-	return &objectModel;
+	return depthPoints;
 }
 
 void updateModel()
 {
 	cv::Mat depth = kinect->getDepthImage();
+
 	if (depth.empty())
 		return;
 	for (int i=0;i<S;++i)
@@ -51,10 +80,21 @@ void updateModel()
 	{
 		int X = depth.rows * (i / dS);
 		int Y = depth.cols * (j / dS);
-		QVector3D& v = objectModel.vertices[i*S+j];
+		QVector3D& v = depthPoints->vertices[i*S+j];
 		short val = depth.at<short>(X, Y);
-		v.setZ( -(double)(val)/200.0);
+
+		Vector4 pos = NuiTransformDepthImageToSkeleton(X, Y, val << 3, NUI_IMAGE_RESOLUTION_640x480);
+		pos.x = pos.x/pos.w;
+		pos.y = pos.y/pos.w;
+		pos.z = pos.z/pos.w;
+		
+		v.setX(pos.x);
+		v.setY(pos.y);
+		v.setZ(pos.z);
 	}
+
+	//depthPoints->modelMatrix.translate(0, 0, -4);
+	//depthPoints->modelMatrix.scale(8);
 }
 
 

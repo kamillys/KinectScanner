@@ -57,6 +57,7 @@ void RenderWidget::initializeGL()
 
 	alfa = 0;
 	beta = 0;
+	dist = 20;
 
 	loadShader(shader,
 	"precision highp float;\n"
@@ -95,7 +96,7 @@ void RenderWidget::resizeGL(int w, int h)
 		h = 1;
 	glViewport(0, 0, w, h);
 	pMatrix.setToIdentity();
-	pMatrix.perspective(60.0, (float) w/(float) h, 0.01f,1000.0f);
+	pMatrix.perspective(60.0, (float) w/(float) h, 0.1f,100000.0f);
 }
 
 void RenderWidget::paintGL()
@@ -106,16 +107,18 @@ void RenderWidget::paintGL()
 	
 	vMatrix.setToIdentity();
 	//vMatrix.lookAt(QVector3D(10, 10, 10), QVector3D(0, 0, 0), QVector3D(0, 0, 1));
-	vMatrix.lookAt(10*QVector3D(sin(beta), sin(alfa)*cos(beta), cos(alfa)*cos(beta)), QVector3D(0, 0, 0), QVector3D(-1, 0, 0));
+	vMatrix.lookAt(20*QVector3D(sin(beta), sin(alfa)*cos(beta), cos(alfa)*cos(beta)), QVector3D(0, 0, 0), QVector3D(-1, 0, 0));
 
 	QMatrix4x4 VP = pMatrix * vMatrix;
 	
-	//for (int i=0;i<models.size(); ++i)
-	//	models[i]->Render(VP, this, &shader);
-	//glDisable(GL_DEPTH_TEST);
-	model.RenderPoints(VP, this, &shader);
+	for (int i=0;i<models.size(); ++i)
+		models[i]->Render(VP, this, &shader);
+	
+	model.Render(VP, this, &shader);
 
-	DepthScanner::getModel()->RenderPoints(VP, this, &shader);
+	GLModel* models = DepthScanner::getModel();
+	for (int i=0; i<DepthScanner::modelCount(); ++i)
+		models[i].Render(VP, this, &shader);
 
 	if (logger->isLogging()) {
 	QList<QOpenGLDebugMessage> messages = logger->loggedMessages();
@@ -179,4 +182,9 @@ void RenderWidget::mousePressEvent(QMouseEvent * ev)
 void RenderWidget::mouseReleaseEvent(QMouseEvent * ev)
 {
 	mousePt = ev->pos();
+}
+
+void RenderWidget::wheelEvent(QWheelEvent* ev)
+{
+	ev->delta();
 }
