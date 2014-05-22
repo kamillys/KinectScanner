@@ -20,7 +20,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <widget class="QPushButton" name="pushButton_2">
+      <widget class="QPushButton" name="resetButton">
        <property name="text">
         <string>RESET OBJECT!!</string>
        </property>
@@ -40,7 +40,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="shotButton">
        <property name="text">
         <string>Shot!</string>
        </property>
@@ -71,7 +71,14 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="doubleSpinBox_2"/>
+          <widget class="QDoubleSpinBox" name="distanceBox">
+           <property name="minimum">
+            <double>-99.989999999999995</double>
+           </property>
+           <property name="singleStep">
+            <double>0.500000000000000</double>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -85,7 +92,17 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="doubleSpinBox_3"/>
+          <widget class="QDoubleSpinBox" name="angleBox">
+           <property name="minimum">
+            <double>-99999.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>99999.000000000000000</double>
+           </property>
+           <property name="singleStep">
+            <double>5.000000000000000</double>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>

@@ -79,15 +79,16 @@ void RenderWidget::initializeGL()
 	{
 		models.push_back(new GLModel(this));
 		build_axis(models[i], i);
+		models[i]->modelMatrix.scale(1.0f/5.0f);
 	}
 	models[0]->color = QColor(255,0,0);
 	models[1]->color = QColor(0,255,0);
 	models[2]->color = QColor(0,0,255);
 
 	
-	model.color = QColor(255, 0, 255);
-	for (int i=0;i<10;++i)
-		model.vertices<<QVector3D(i,0,0)<<QVector3D(i,1,0)<<QVector3D(i+1,1,0);
+	//model.color = QColor(255, 0, 255);
+	//for (int i=0;i<10;++i)
+	//	model.vertices<<QVector3D(i,0,0)<<QVector3D(i,1,0)<<QVector3D(i+1,1,0);
 }
 
 void RenderWidget::resizeGL(int w, int h)
@@ -107,14 +108,14 @@ void RenderWidget::paintGL()
 	
 	vMatrix.setToIdentity();
 	//vMatrix.lookAt(QVector3D(10, 10, 10), QVector3D(0, 0, 0), QVector3D(0, 0, 1));
-	vMatrix.lookAt(20*QVector3D(sin(beta), sin(alfa)*cos(beta), cos(alfa)*cos(beta)), QVector3D(0, 0, 0), QVector3D(-1, 0, 0));
+	vMatrix.lookAt(dist*QVector3D(sin(beta), sin(alfa)*cos(beta), cos(alfa)*cos(beta)), QVector3D(0, 0, 0), QVector3D(-1, 0, 0));
 
 	QMatrix4x4 VP = pMatrix * vMatrix;
 	
 	for (int i=0;i<models.size(); ++i)
 		models[i]->Render(VP, this, &shader);
 	
-	model.Render(VP, this, &shader);
+	//model.Render(VP, this, &shader);
 
 	GLModel* models = DepthScanner::getModel();
 	for (int i=0; i<DepthScanner::modelCount(); ++i)
@@ -186,5 +187,7 @@ void RenderWidget::mouseReleaseEvent(QMouseEvent * ev)
 
 void RenderWidget::wheelEvent(QWheelEvent* ev)
 {
-	ev->delta();
+	int d = ev->delta();
+	dist += d > 0 ? 1 : d < 0 ? -1 : 0;
+	updateGL();
 }

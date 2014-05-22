@@ -10,5 +10,9 @@ void setKinectDevice(KinectDevice* d);
 void updateModel();
 int modelCount();
 GLModel* getModel();
+void resetVoxels();
+void setDistanceToObject(double d);
+void setObjectRotationAngle(double a);
+void goShotObject();
 
 }

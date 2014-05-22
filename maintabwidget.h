@@ -14,6 +14,11 @@ public:
 	~MainTabWidget(void);
 	
     void setDevice(KinectDevice* dev);
+private slots:
+	void on_resetButton_clicked();
+	void on_shotButton_clicked();
+	void on_angleBox_valueChanged(double a);
+	void on_distanceBox_valueChanged(double d);
 private:
 	Ui::MainTabWidget* ui;
 };
