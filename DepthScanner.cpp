@@ -8,11 +8,14 @@ static void computeVoxelMesh();
 
 static KinectDevice* kinect = nullptr;
 static QMatrix4x4 GlobalMatrix;
+static QMatrix4x4 OffsetMatrix;
 static GLModel* depthPoints;
 static const int objectCount = 3;
 static bool is_Initialized = false;
 static const int S = 32;
 static const int DepthS = 128;
+static const int Sm = S - 1;
+static const double dSm = S - 1;
 static const double dS = static_cast<double>(S);
 static const double dDepthS = static_cast<double>(DepthS);
 static double distanceToObject = 0;
@@ -108,8 +111,6 @@ void resetVoxels()
 static void computeVoxelMesh()
 {
 	depthPoints[1].vertices.clear();
-	static const int Sm = S - 1;
-	static const double dSm = S - 1;
 	
 	for (int i=0;i<S;++i)
 	for (int j=0;j<S;++j)
@@ -128,9 +129,12 @@ static void computeVoxelMesh()
 
 static void computeRotations()
 {
-	depthPoints[1].modelMatrix = GlobalMatrix;
-	depthPoints[1].modelMatrix.translate(0, 0, distanceToObject);
-	depthPoints[1].modelMatrix.rotate(rotationAngle, -1, 0, 0);
+	OffsetMatrix.setToIdentity();
+	OffsetMatrix.translate(0, 0, distanceToObject);
+	OffsetMatrix.rotate(rotationAngle, -1, 0, 0);
+
+	
+	depthPoints[1].modelMatrix = GlobalMatrix * OffsetMatrix;
 }
 
 void setDistanceToObject(double d)
@@ -147,12 +151,39 @@ void setObjectRotationAngle(double a)
 
 void goShotObject()
 {
+	cv::Mat depth = kinect->getDepthImage();
+	cv::Mat depthd = depth.clone();
 	//TODO: Perform vertex clipping
 	for (int i=0;i<S;++i)
 	for (int j=0;j<S;++j)
 	for (int k=0;k<S;++k)
 	{
-		if ( sqrt(i*i+j*j+k*k) > 25)
+		double di = 2 * i / dSm;
+		double dj = 2 * j / dSm;
+		double dk = 2 * k / dSm;
+        QVector3D point(-1 + di, -1 + dj, -1 + dk);
+		point = OffsetMatrix.map(point);
+		Vector4 v;
+		v.x = point.x();
+		v.y = point.y();
+		v.z = point.z();
+		v.w = 1;
+		LONG x, y;
+		USHORT d;
+		NuiTransformSkeletonToDepthImage(v, &x, &y, &d, NUI_IMAGE_RESOLUTION_640x480);
+		d = NuiDepthPixelToDepth(d);
+		bool mark = false;
+		if (x < 0 || y < 0 || y >= depth.cols || x >= depth.rows)
+		{
+			//NOP
+		} else {
+			short val = depth.at<short>(x, y);
+			depthd.at<short>(x, y) = d;
+			if (val < d)
+				mark = true;
+		}
+
+		if(!mark)
 			voxels[i*S*S+j*S+k] = 0;
 	}
 
